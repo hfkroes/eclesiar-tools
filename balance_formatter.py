@@ -8,7 +8,6 @@ def sumarizar_categoria(df, df_name, categoria):
     print(f"\nSumario {df_name}:\n{sumario_categoria}")
 
 def conta_e_soma(df, categoria):
-    # Group by category and calculate the number of transactions and sum of values
     df_resultante = df.groupby(categoria).agg(
         Transacoes=(categoria, 'size'),
         Valor=('Valor', 'sum') 
@@ -79,7 +78,6 @@ vat = conta_e_soma(entradas_vat, 'Data')
 entradas_wt = entradas[entradas['Categoria'].isin(['Imposto sobre trabalho'])]
 wt = conta_e_soma(entradas_wt, 'Data')
 
-
 entradas_brl = entradas[entradas['Moeda'].isin(['BRL'])]
 sumarizar_categoria(entradas_brl, "entradas em BRL", "Categoria")
 entradas_brl_df = conta_e_soma(entradas_brl, 'Categoria')
@@ -108,31 +106,3 @@ saidas_gold_df = conta_e_soma(saidas_gold, 'Categoria')
 saidas_outras = saidas[~saidas['Moeda'].isin(['BRL', 'Gold'])]
 sumarizar_categoria(saidas_outras, "saídas em outras moedas", "Categoria")
 saidas_outras_df = conta_e_soma(saidas_outras, 'Categoria')
-
-# Convert 'Data' to datetime format
-serie_temporal = vat[vat['Data'] != 'Total']
-serie_temporal['Valor'] = serie_temporal['Valor'] * 10
-serie_temporal = serie_temporal[~serie_temporal['Data'].isin(['12-10-2024'])]
-serie_temporal['Data'] = pd.to_datetime(serie_temporal['Data'], format='%d-%m-%Y')
-plt.figure(figsize=(10, 6))
-sns.lineplot(data=serie_temporal, x='Data', y='Valor', marker='o')
-plt.title('Volume de vendas de bens no mercado brasileiro por dia')
-plt.ylabel("Valor movimentado (BRL)")
-plt.xlabel('Data')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
-
-# Convert 'Data' to datetime format
-serie_temporal = wt[wt['Data'] != 'Total']
-serie_temporal['TransacaoMedia'] = serie_temporal['TransacaoMedia'] * 10
-serie_temporal = serie_temporal[~serie_temporal['Data'].isin(['12-10-2024'])]
-serie_temporal['Data'] = pd.to_datetime(serie_temporal['Data'], format='%d-%m-%Y')
-plt.figure(figsize=(10, 6))
-sns.lineplot(data=serie_temporal, x='Data', y='TransacaoMedia', marker='o')
-plt.title('Salário médio no mercado brasileiro')
-plt.ylabel("Salário médio (BRL)")
-plt.xlabel('Data')
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.show()
